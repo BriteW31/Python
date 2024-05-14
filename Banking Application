@@ -1,0 +1,493 @@
+class Transaction:
+    '''
+    Fields
+    amount (Float)
+    date (Str)
+    transaction_type (Str), 
+    description (Str),
+    category (Str)
+    Requires:
+     - transaction_type is either "income" or "expense".
+     - date is in the format "YYYY-MM-DD"
+     - whenever the transaction is an "expense" category is one of: 
+      "Entertainment", "Home", "Transportation", "Food", "Health", "Bills", 
+      "Electronics", "Miscellaneous"
+      otherwise category is the empty string
+    '''    
+    def __init__(self, amount, date, transaction_type, description,category):
+        '''
+        Constructor: creates a Transaction object with all fields matching the 
+        given parameters
+        
+        __init__: Transaction, Float, Str, Str, Str, Str
+        Requires: see field requirements above
+        
+        Effects: Mutates self
+        
+        '''
+        
+        self.amount = amount
+        self.date = date
+        self.transaction_type = transaction_type
+        self.description = description
+        self.category = category
+    
+
+    def __repr__(self):
+        '''
+        Returns a string representation of self
+        
+        (Implicitly called by print(t), where t is of type Transaction)
+        
+        __repr__: Transaction -> Str
+        
+        '''
+        
+        if self.category == '':
+            category_display = 'N/A'
+        else:
+            category_display = self.category
+
+        s = "Transaction | Date: {0}, Type: {1}, Amount: ${2:,.2f}, Desc: {3}, Category: {4}"
+        
+        return s.format(self.date, self.transaction_type.capitalize(), 
+                        self.amount, self.description, category_display)
+
+
+    def __eq__(self, other):
+        '''
+        Returns True if self and other share the same Transaction attributes.
+        
+        __eq__: Transaction Any -> Bool
+
+        '''
+        return (isinstance(other, Transaction) and
+                self.amount == other.amount and
+                self.description == other.description and
+                self.date == other.date and
+                self.transaction_type == other.transaction_type and
+                self.category == other.category)
+
+#helper function
+def trans_split(lst):
+    '''
+    Returns the Transaction from a consumed list
+    trans_split: (listof Str) -> Transaction
+    '''
+    v = ''
+    w = ''
+    x = ''
+    y = ''
+    z = ''    
+    for i in range(0, len(lst)):
+        key, value = lst[i].split(": ")
+        if key == "amount":
+            v = float(value)
+        elif key == "date":
+            w = value
+        elif key == "transaction_type":
+            x = value
+        elif key == "description":
+            y = value
+        else:
+            z = value
+    
+    return Transaction(v,w,x,y,z)
+    
+
+#function
+def process_transactions(filename):
+    '''
+    Reads a file of transactions once per line,
+    and returns a list of Transactions
+    
+    Effects:
+        Reads a file named filename
+    
+    process_transactions: Str -> (listof Transactions)
+    Requires:
+    filename is a valid file in the current directory
+    
+    Examples:
+    process_transactions("examples.txt") 
+    => [Transaction | Date: 2004-07-21, Type: Income, Amount: $1,900.00, Desc: Consulting Fee, Category: N/A]
+    assuming that examples.txt has the following line:
+    {amount: 1900.0, date: 2004-07-21, transaction_type: income, description: Consulting Fee}
+    '''
+    lot = []
+    with open(filename, 'r') as fin:
+        lines = fin.readlines()
+        for line in lines:
+            line2 = line.replace("{", "")
+            line3 = line2.replace("}", "")
+            info = line3.split(', ')
+            transaction = trans_split(info)
+            lot.append(transaction)
+    if len(lot) == 0:
+        return
+    return lot
+
+## end of Transaction class ##
+
+class Account:
+    '''
+    Fields:
+    owner (Str)
+    transactions (listof Transaction)
+    '''    
+    
+    def __init__(self, owner):
+        '''
+        Constructor: creates an Account object for owner with an empty 
+        transactions list
+        
+        __init__: Transaction, Str
+        
+        Effects: Mutates self
+        
+        '''        
+       
+        self.owner = owner
+        self.transactions = []
+        
+    def __repr__(self):
+        '''
+        Returns a string representation of self
+        
+        (Implicitly called by print(t), where t is of type Account)
+        
+        __repr__: Account -> Str
+        
+        '''
+        s = "Account(owner={0}, balance={1})"
+        
+        return s.format(self.owner, self.get_balance())
+    
+    def __eq__(self,other):
+        '''
+        Returns True if self and other share the same owner and transactions.
+        
+        __eq__: Account Any -> Bool
+
+        '''
+        return (isinstance(other, Account) and
+                self.owner == other.owner and
+                self.transactions == other.transactions) 
+                # this will call the __eq__ function of Transaction class 
+
+    def add_transaction(self, transaction):
+        '''
+        Adds a new transaction to the account.
+        
+        Effects:
+        Mutates self
+
+        add_transaction: Transaction -> None
+        '''
+        self.transactions.append(transaction)
+
+    def list_transactions(self):
+        '''
+        Returns a list of all transactions in self sorted by date
+
+        list_transactions: Account -> (lisof Transaction)
+        '''
+        return sorted(self.transactions,key = numeric_date)
+    
+
+    def filter_type_by_amount(self,ttype,threshold):
+        '''
+        Returns a list of all transacations in self that are of type ttype whose
+        amount value is above or equal to threshold, sorted by date.
+        
+        filter_type_by_amount: Account Str Float -> (listof Transaction)
+        '''
+        L = self.transactions
+        ts = list(filter(lambda t: t.transaction_type == ttype,L))
+        sortTs = list(filter(lambda t: t.amount >= threshold,ts))
+        return sorted(sortTs, key = numeric_date)        
+    
+   
+    def filter_expenses_by_category(self, category):
+        '''
+        Returns a list of all transactions in self of type "expense" 
+        that match category, sorted by date
+        
+        filter_expenses_by_category: Account Str -> (listof Transaction)
+        Requires:
+        category is one of:" Entertainment", "Home", "Transportation", 
+        "Food", "Health", "Bills", "Electronics", "Miscellaneous"
+        
+        '''
+        ts = list(filter(lambda t: t.category == category,self.transactions))
+        return sorted(ts, key = numeric_date)
+    
+    
+    def filter_transactions_by_date_range(self,start_date,end_date):
+        '''
+        Returns a list of all transactions in self whose date is on or after 
+        start_date and whose date is on or before end_date, sorted by date
+        
+        filter_transactions_by_date_range: Account Str Str
+        Requires:
+        start_date and end_date are in the format "YYYY-MM-DD"
+        
+        '''
+        L = []
+        tempTransLB = Transaction(0,start_date,'','','')
+        tempTransUB = Transaction(0,end_date,'','','')
+        
+        
+        for t in self.transactions:
+            low_num = numeric_date(tempTransLB)
+            curr_num = numeric_date(t)
+            high_num = numeric_date(tempTransUB)
+            if  low_num <= curr_num  <= high_num:
+                L.append(t)
+                
+        return sorted(L,key = numeric_date)
+    
+        
+        
+    def get_balance(self):
+        ''' 
+        Returns the balance in the Account self
+        
+        get_balance: Account -> Float
+        
+        Example:
+        if self.transactions = 
+        [Transaction(200.0, "2024-01-02", "expense", "Groceries" ,"Food"),         
+         Transaction(150.0, "1995-06-24", "income", "Birthday", "")]
+        then self.get_balance() => -50.0
+        '''
+        lot = self.transactions
+        balance = 0
+        for i in lot:
+            if i.transaction_type == "income":
+                balance = balance + i.amount
+            else:
+                balance = balance - i.amount
+        return balance
+          
+### end of Account class ###
+
+def numeric_date(T):
+    '''
+    Returns the day since the date 1-1-1 that a transcation T occurred 
+    (assuming 365 days every year, with 366 days every 4 years)
+    
+    numeric_date: Transaction -> Nat
+    
+    Examples:
+    if T = Transaction(0,'1-1-5','income','','') then numeric_date(T) => 5
+    if T = Transaction(0, '2-2-1','income','','') then numeric_date(T) => 397
+    '''
+    #date = T.date.strip('"')
+    values = T.date.split("-")
+    year = int(values[0])
+    months = int(values[1])
+    days = int(values[2])
+    
+    
+    daysPerYear = 365
+    extraDays = year // 4
+    
+    daysInYearFromMonths = 0
+    for month in range(1,months):
+        if month in [1,3,5,7,8,10,12]: #shouldn't technically reach 12
+            daysInYearFromMonths += 31
+        elif month == 2:
+            daysInYearFromMonths += 28
+        else:
+            daysInYearFromMonths += 30
+        
+    
+    return daysPerYear*(year-1)+ daysInYearFromMonths + days + extraDays       
+
+def display_transactions(tList):
+    '''
+    Prints all transactions in tList, one per line with a final 
+    blank line at the end.
+    
+    Effects: prints to screen
+
+    display_all_transactions: (listof Transaction) -> None
+    
+    Examples:
+    if tList = [Transaction(200.0, "2024-01-02", "expense", "Groceries" ,"Food"),         
+                Transaction(150.0, "1995-06-24", "income", "Birthday", "")]
+    then display_transactions(tList) => None and prints
+    Transaction | Date: 2024-01-02, Type: Expense, Amount: $200.00, Desc: Groceries, Category: Food
+    Transaction | Date: 1995-06-24, Type: Income, Amount: $150.00, Desc: Birthday, Category: N/A
+    [empty line here]
+    '''
+    print()
+    for i in tList:
+        print(i)
+    print("\n")
+    return
+
+#function
+def stringify(transaction):
+    '''
+    Updates file "username_new.txt", adding all new transactions with previous
+    ones and returns None
+    
+    Effects:
+    Writes to a new file named "username_new.txt"
+    
+    stringify: Transaction -> Str
+    
+    Examples:
+    transaction = Transaction(100.0,"2024-09-01","income","lucky","")
+    stringify(transaction) => 
+    {amount: 100.0, date: 2024-09-01, transaction_type: income, description: lucky}
+    '''
+    if transaction.category == "":
+        s = "{{amount: {0}, date: {1}, transaction_type: {2}, description: {3}}}"
+        return s.format(transaction.amount, transaction.date, transaction.transaction_type, transaction.description)
+    else:
+        s = "{{amount: {0}, date: {1}, transaction_type: {2}, description: {3}, category: {4}}}"
+        return s.format(transaction.amount, transaction.date, transaction.transaction_type, transaction.description, transaction.category)
+
+
+# all messages
+welcome_msg = '''Hello {0}, what would you like to do?
+0 - show balance
+1 - show transactions
+2 - add a transaction
+3 - exit and save
+-> '''
+
+balance_msg = "Your balance is ${0}\n"
+
+transaction_message = '''How would you like to filter your transactions?
+0 - show all transactions
+1 - by date range
+2 - by expense category
+3 - by expense amount
+4 - by income amount
+5 - go back
+-> '''
+
+date_msg1 = "What is the start date (YYYY-MM-DD)?: "
+date_msg2 = "What is the end date (YYYY-MM-DD)?: "
+
+cat_msg = "Which category would you like to filter by?:"
+
+amt_msg = "Enter a lower bound for the amount:"
+
+add_transaction_msg1 = "What type of transaction is this? 0 for income, 1 for expense: "
+add_transaction_msg2 = "What is the amount of the transaction?: "
+add_transaction_msg3 = "What is the date of the transaction (YYYY-MM-DD)?: "
+add_transaction_msg4 = "Please provide a description of the transaction: "
+optional_add_transaction_msg = '''What type of expense is it?
+0 - Entertainment
+1 - Home
+2 - Transportation
+3 - Food
+4 - Health
+5 - Bills
+6 - Electronics
+7 - Miscellaneous
+-> '''
+
+#function
+def start_banking(username):
+    # creates Account given username
+    account = Account(username)
+    
+    # creates and process Transactions from file 'username.txt'
+    transactions = process_transactions(username + ".txt")
+    
+    # adds transactions
+    if transactions:
+        for transaction in transactions:
+            account.add_transaction(transaction)
+    
+    # initialize boolean for loop
+    boolean = True
+    
+    # actual application
+    while boolean:
+        # user input determines what the program does
+        choice = int(input(welcome_msg.format(username)))
+        
+        # get balance
+        if choice == 0:
+            print(balance_msg.format(account.get_balance()))
+            print("\n")
+        
+        # shows transactions through different filters
+        elif choice == 1:
+            filter_choice = input(transaction_message)
+                
+            if filter_choice == "0":
+                display_transactions(account.list_transactions())
+                
+            elif filter_choice == "1":
+                start_date = input(date_msg1)
+                end_date = input(date_msg2)
+                filter_transactions = account.filter_transactions_by_date_range(start_date, end_date)
+                display_transactions(filter_transactions)  
+                print("\n")
+                
+            elif filter_choice == "2":
+                category = input(cat_msg)
+                filter_transactions = account.filter_expenses_by_category(category)
+                display_transactions(filter_transactions)
+                print("\n")
+                
+            elif filter_choice == "3":
+                bound = float(input(amt_msg))
+                filter_transactions = account.filter_type_by_amount("expense", bound)
+                display_transactions(filter_transactions)      
+                print("\n")
+                
+            elif filter_choice == "4":
+                income = input(amt_msg)
+                filter_transcations = account.filter_type_by_amount("income", income)     
+                display_transactions(filter_transcations)
+                print("\n")
+            
+            elif filter_choice == "5":
+                print("\n")
+            
+            else:
+                print(invalid)
+        
+        # add transaction
+        elif choice == 2:
+            transaction_type = input(add_transaction_msg1)
+            amount = float(input(add_transaction_msg2))
+            date = input(add_transaction_msg3)
+            description = input(add_transaction_msg4)
+            
+            if transaction_type == "0":
+                category = ""
+                print("\n")
+            elif transaction_type == "1":
+                category_choice = input(optional_add_transaction_msg)
+                if int(category_choice) > 7 or int(category_choice) < 0 or not(category_choice.isdigit()):
+                    print(invalid)
+                categories = ["Entertainment", "Home", "Transportation", "Food", "Health", "Bills", "Electronics", "Miscellaneous"]
+                category = categories[int(category_choice)]
+                print("\n")
+            
+            else:
+                print(invalid)
+                
+        # exits application and closes program
+        elif choice == 3:
+            fout = open(username + "_new.txt", "w")
+            for transaction in transactions:
+                fout.write(stringify(transaction))
+            fout.close()
+            boolean = False
+        
+        # if user inputs is unknown
+        else:
+            start_banking(username)
+
+start_banking("b63wang")

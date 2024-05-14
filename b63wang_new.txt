@@ -1,0 +1,34 @@
+Transaction | Date: 2018-03-03, Type: Income, Amount: $2,800.00, Desc: Salary
+, Category: N/A
+Transaction | Date: 2019-06-12, Type: Expense, Amount: $250.00, Desc: Air Conditioner Repair, Category: Home
+
+Transaction | Date: 2020-01-20, Type: Income, Amount: $2,900.00, Desc: Bonus
+, Category: N/A
+Transaction | Date: 2021-04-25, Type: Expense, Amount: $80.00, Desc: Gardening Supplies, Category: Home
+
+Transaction | Date: 2022-08-30, Type: Income, Amount: $3,000.00, Desc: Freelance Project
+, Category: N/A
+Transaction | Date: 2023-11-15, Type: Expense, Amount: $90.00, Desc: Pet Food, Category: Miscellaneous
+
+Transaction | Date: 1994-06-24, Type: Income, Amount: $3,100.00, Desc: Salary
+, Category: N/A
+Transaction | Date: 1995-09-07, Type: Expense, Amount: $110.00, Desc: Water Bill, Category: Bills
+
+Transaction | Date: 1996-12-13, Type: Income, Amount: $3,200.00, Desc: Investment Return
+, Category: N/A
+Transaction | Date: 1997-03-22, Type: Expense, Amount: $130.00, Desc: Home Maintenance, Category: Home
+
+Transaction | Date: 1998-07-01, Type: Income, Amount: $3,300.00, Desc: Salary
+, Category: N/A
+Transaction | Date: 1999-10-09, Type: Expense, Amount: $140.00, Desc: New Glasses, Category: Health
+
+Transaction | Date: 2000-04-16, Type: Income, Amount: $3,400.00, Desc: Bonus
+, Category: N/A
+Transaction | Date: 2001-08-24, Type: Expense, Amount: $160.00, Desc: Car Insurance, Category: Transportation
+
+Transaction | Date: 2002-01-31, Type: Income, Amount: $3,500.00, Desc: Salary
+, Category: N/A
+Transaction | Date: 2003-05-10, Type: Expense, Amount: $170.00, Desc: Medical Checkup, Category: Health
+
+Transaction | Date: 2004-09-18, Type: Income, Amount: $3,600.00, Desc: Freelance Project
+, Category: N/A

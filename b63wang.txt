@@ -1,0 +1,17 @@
+{amount: 2800.0, date: 2018-03-03, transaction_type: income, description: Salary}
+{amount: 250.0, date: 2019-06-12, transaction_type: expense, description: Air Conditioner Repair, category: Home}
+{amount: 2900.0, date: 2020-01-20, transaction_type: income, description: Bonus}
+{amount: 80.0, date: 2021-04-25, transaction_type: expense, description: Gardening Supplies, category: Home}
+{amount: 3000.0, date: 2022-08-30, transaction_type: income, description: Freelance Project}
+{amount: 90.0, date: 2023-11-15, transaction_type: expense, description: Pet Food, category: Miscellaneous}
+{amount: 3100.0, date: 1994-06-24, transaction_type: income, description: Salary}
+{amount: 110.0, date: 1995-09-07, transaction_type: expense, description: Water Bill, category: Bills}
+{amount: 3200.0, date: 1996-12-13, transaction_type: income, description: Investment Return}
+{amount: 130.0, date: 1997-03-22, transaction_type: expense, description: Home Maintenance, category: Home}
+{amount: 3300.0, date: 1998-07-01, transaction_type: income, description: Salary}
+{amount: 140.0, date: 1999-10-09, transaction_type: expense, description: New Glasses, category: Health}
+{amount: 3400.0, date: 2000-04-16, transaction_type: income, description: Bonus}
+{amount: 160.0, date: 2001-08-24, transaction_type: expense, description: Car Insurance, category: Transportation}
+{amount: 3500.0, date: 2002-01-31, transaction_type: income, description: Salary}
+{amount: 170.0, date: 2003-05-10, transaction_type: expense, description: Medical Checkup, category: Health}
+{amount: 3600.0, date: 2004-09-18, transaction_type: income, description: Freelance Project}
